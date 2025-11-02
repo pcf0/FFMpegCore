@@ -16,8 +16,7 @@ public sealed class FFMpegGlobalArguments : FFMpegArgumentsBase
     }
 
     /// <summary>
-    /// <see href="https://trac.ffmpeg.org/wiki/Hardware/VAAPI#SurfaceFormats" />
-    /// undocumented in <see href="https://www.ffmpeg.org/ffmpeg.html#Advanced-Video-options" />
+    /// <inheritdoc cref="HardwareAccelerationOutputFormatArgument"/>
     /// </summary>
     /// <param name="device"></param>
     /// <returns></returns>
@@ -27,10 +26,7 @@ public sealed class FFMpegGlobalArguments : FFMpegArgumentsBase
     }
 
     /// <summary>
-    /// <see href="https://ffmpeg.org/ffmpeg.html#Generic-options" />
-    /// Suppress printing banner.
-    /// All FFmpeg tools will normally show a copyright notice, build options and library versions.
-    /// This option can be used to suppress printing this information.
+    /// <inheritdoc cref="HideBanner"/>
     /// </summary>
     /// <returns></returns>
     public FFMpegGlobalArguments WithHideBanner()
@@ -39,8 +35,7 @@ public sealed class FFMpegGlobalArguments : FFMpegArgumentsBase
     }
 
     /// <summary>
-    /// <see href="https://ffmpeg.org/ffmpeg.html#Main-options" />
-    /// Explicitly disable logging of encoding progress/statistics.
+    /// <inheritdoc cref="Stats"/>
     /// </summary>
     /// <returns></returns>
     public FFMpegGlobalArguments WithNoStats()
