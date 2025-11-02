@@ -661,6 +661,31 @@ public class ArgumentBuilderTest
     }
 
     [TestMethod]
+    public void Builder_BuildString_VideoFilter_Vaapi_Scale4()
+    {
+        var str = FFMpegArguments
+            .FromFileInput("input.mp4")
+            .OutputToFile("output.mp4", false, opt => opt
+                .WithVideoFilters(filterOptions => filterOptions
+                    .Format("nv12", "vaapi")
+                    .HardwareUpload()
+                    .WithVaapiVideoFilter(options => options
+                        .Scale(VideoSize.Original)
+                    )
+                )
+                .WithVaapiRcMode(VaapiRcMode.CQP)
+                .WithH264VaapiOptions(options => options
+                    .WithQuantizer(28)
+                )
+            )
+            .Arguments;
+
+        Assert.AreEqual(
+            "-i \"input.mp4\" -vf \"format=pix_fmts=nv12|vaapi, hwupload\" -rc_mode CQP -qp 28 \"output.mp4\"",
+            str);
+    }
+
+    [TestMethod]
     public void Builder_BuildString_Single_Image()
     {
         var str = FFMpegArguments
@@ -700,6 +725,29 @@ public class ArgumentBuilderTest
 
         Assert.AreEqual(
             "-i \"input.mp4\" -use_wallclock_as_timestamps 1 -f segment -segment_atclocktime 1 -segment_time 600 -min_seg_duration 300 -reset_timestamps 1 -strftime 1 \"output-%Y%m%d-%s.mp4\"",
+            str);
+    }
+
+    [TestMethod]
+    public void Builder_BuildString_Segments_WUseWallclockTimestamps()
+    {
+        var str = FFMpegArguments
+            .FromFileInput("input.mp4")
+            .OutputToFile("output-%Y%m%d-%s.mp4", false, opt => opt
+                .WithUseWallclockAsTimestamps(false)
+                .ForceFormat("segment")
+                .WithSegmentOptions(options => options
+                    .WithSegmentAtClocktime()
+                    .WithSegmentTime(TimeSpan.FromMinutes(10))
+                    .WithMinimumSegmentDuration(TimeSpan.FromMinutes(5))
+                    .WithResetTimestamps()
+                    .WithStrftime()
+                )
+            )
+            .Arguments;
+
+        Assert.AreEqual(
+            "-i \"input.mp4\" -use_wallclock_as_timestamps 0 -f segment -segment_atclocktime 1 -segment_time 600 -min_seg_duration 300 -reset_timestamps 1 -strftime 1 \"output-%Y%m%d-%s.mp4\"",
             str);
     }
 
